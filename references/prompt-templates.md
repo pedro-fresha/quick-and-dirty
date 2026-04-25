@@ -21,12 +21,15 @@ Result contract:
 - Non-goals: [checklist]
 - Edge cases to cover: [checklist]
 - Existing behavior that must not break: [checklist]
+- Corners intentionally cut: [collapsed stages, skipped abstractions, skipped refactors]
 
 Implementation policy:
 - Make the smallest local patch that satisfies the contract.
 - Duplication, local adapters, direct conditionals, and shallow glue are allowed.
 - Do not refactor unrelated code, rename APIs, reorganize modules, or improve style.
 - Do not remove tests, disable checks globally, swallow errors, or hide failures.
+- If the source request came from a long PRD, satisfy the extracted acceptance
+  criteria rather than reproducing the PRD's process or stage structure.
 
 Verification:
 - First run: [targeted command]
@@ -49,6 +52,7 @@ style or maintainability. Try to find ways the result can be wrong.
 
 Inputs:
 - Result contract: [checklist]
+- Corners intentionally cut: [list]
 - Implementation summary or diff: [summary/path]
 - Verification commands already run: [commands]
 
@@ -59,6 +63,7 @@ Look for:
 - null/empty/large input issues
 - backwards compatibility breaks in existing user-visible behavior
 - tests that pass without proving the requirement
+- shortcuts that accidentally cut a real acceptance criterion
 - manual/browser scenarios not covered by automated tests
 
 Return:
@@ -78,6 +83,7 @@ requirements. Ignore whether the code is pretty.
 Inputs:
 - Original user request: [request]
 - Result contract: [checklist]
+- Long-spec triage output, if any: [critical path, cuts, parallel tracks]
 - Diff or changed files: [paths]
 - Test evidence: [commands and outcomes]
 
@@ -99,6 +105,7 @@ integration bugs, conflicts, and missed verification.
 Inputs:
 - Branches/worktrees merged: [list]
 - Result contract: [checklist]
+- Parallelization plan and intentional cuts: [summary]
 - Merge conflicts resolved: [files or none]
 - Commands already run: [commands]
 
@@ -109,6 +116,7 @@ Check:
 - tests that only passed in isolated worktrees but fail together
 - UI/API/client-server behavior mismatch
 - stale imports, dead paths, or missed build artifacts
+- PRD stages that were collapsed but still need outcome-level verification
 
 Return:
 - Blocking integration bugs

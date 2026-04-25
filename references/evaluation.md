@@ -51,6 +51,24 @@ Expected behavior:
 - This skill should not be used.
 - Route to normal architecture, implementation, and testing workflows instead.
 
+### Case 4: Long PRD Compression
+
+Prompt:
+
+> Use quick-and-dirty on this 20-stage PRD. The requirements are detailed, but
+> the code is throwaway. Find every safe corner to cut, parallelize what you can,
+> and still make sure the acceptance criteria and edge cases pass.
+
+Expected behavior:
+
+- Skill reads the PRD enough to extract non-negotiable requirements and
+  acceptance criteria.
+- It does not execute all 20 stages literally.
+- It classifies stages into must implement, must verify, can collapse, can cut,
+  can parallelize, and must sequence.
+- It produces a compressed critical-path plan with explicit shortcuts.
+- It verifies against outcomes and reports any unverified requirement as a risk.
+
 ## Trigger Evals
 
 Should trigger:
@@ -63,6 +81,7 @@ Should trigger:
 - "Patch this library fork with the smallest working change."
 - "Fast one-off implementation, no architecture ceremony."
 - "This is throwaway code; maximize working result quality."
+- "Here is a huge PRD; follow quick-and-dirty principles and cut every safe corner."
 
 Should not trigger:
 
@@ -81,6 +100,9 @@ For behavior evals, assert:
 
 - A result contract is written before implementation.
 - Worktree/subagent split is used only when ownership is independent.
+- Long PRDs are compressed into a critical path instead of followed stage by
+  stage when stages are not runtime dependencies.
+- Intentional cuts are listed and checked against acceptance criteria.
 - Verification commands are listed with outcomes.
 - At least one edge-case review or checklist exists.
 - No completion claim appears without fresh verification evidence.

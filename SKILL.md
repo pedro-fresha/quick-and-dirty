@@ -45,6 +45,10 @@ If the user's real priority is maintainable production code, route elsewhere.
    - Ask only if an ambiguity blocks correctness. Otherwise make the fastest
      reasonable assumption and record it.
    - Prefer user-visible outcomes over architectural ideals.
+   - If the input is a long PRD, plan, issue list, or staged spec, read
+     `references/long-spec-triage.md` before decomposing. Do not execute the
+     document stage-by-stage by default; compress it into the fastest route that
+     still satisfies the mandates and acceptance criteria.
 
 2. **Create an isolated execution surface.**
    - Use a feature branch or worktree before editing, especially in a dirty repo.
@@ -58,6 +62,9 @@ If the user's real priority is maintainable production code, route elsewhere.
    - Split by independent behavior, subsystem, file ownership, or test group.
    - Keep shared contracts, shared types, and integration glue sequential.
    - Dispatch implementers only when their file ownership will not overlap.
+   - Explicitly list the corners you are cutting: skipped abstractions, skipped
+     refactors, collapsed phases, reused patterns, manual setup, or narrow
+     compatibility choices.
    - Use the prompt templates in `references/prompt-templates.md` for
      implementers, edge-case hunters, and integration reviewers.
 
@@ -124,6 +131,11 @@ Allowed when it improves speed without increasing bug risk:
 - direct data shaping at the call site
 - temporary compatibility for the exact target version
 - adding focused tests without refactoring the system under test
+- converting a long PRD into a shorter critical-path execution plan
+- collapsing multi-stage rollout/design/documentation phases into direct
+  implementation when they are not required for correctness
+- implementing only the requested visible behavior instead of the PRD's implied
+  future extensibility
 
 Forbidden even for disposable work:
 
@@ -151,6 +163,8 @@ Stop and ask the user before continuing when:
 - Read `references/worktree-parallelization.md` when dispatching subagents,
   creating worktrees, merging worktree branches, or deciding what can run in
   parallel.
+- Read `references/long-spec-triage.md` when the user provides a PRD, long
+  GitHub issue, multi-stage plan, ticket tree, or detailed implementation brief.
 - Read `references/prompt-templates.md` when creating prompts for implementer,
   edge-case, spec-check, or integration-review agents.
 - Read `references/evaluation.md` when evaluating this skill's behavior or

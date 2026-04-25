@@ -20,6 +20,7 @@ where maintainability matters.
 The skill instructs an AI coding agent to:
 
 - lock a result contract before coding
+- triage long PRDs and detailed plans into the fastest valid execution path
 - create isolated worktrees when useful
 - split independent work across subagents
 - prefer the shallowest working patch over clean architecture
@@ -158,14 +159,17 @@ When using this skill:
 1. Confirm the user really wants disposable, speed-first implementation.
 2. Write a short result contract: required behavior, non-goals, edge cases, and
    existing behavior that must not break.
-3. Use a branch or worktree when the repo is dirty, the current branch is
+3. If the prompt includes a long PRD, multi-stage plan, or large issue, compress
+   it first: extract non-negotiables, identify safe corners to cut, collapse
+   unnecessary stages, and split independent tracks.
+4. Use a branch or worktree when the repo is dirty, the current branch is
    `main`/`master`, or parallel subagents will edit code.
-4. Split only independent work across agents. Keep shared contracts and
+5. Split only independent work across agents. Keep shared contracts and
    integration work sequential.
-5. Implement the shallowest working patch.
-6. Run targeted tests, edge-case checks, and the broadest reasonable final
+6. Implement the shallowest working patch.
+7. Run targeted tests, edge-case checks, and the broadest reasonable final
    verification.
-7. Report exactly what changed, what was verified, and any known risks.
+8. Report exactly what changed, what was verified, and any known risks.
 
 ## Example Prompt
 
@@ -182,6 +186,7 @@ works, handles edge cases, and is verified.
 ├── SKILL.md
 ├── references/
 │   ├── evaluation.md
+│   ├── long-spec-triage.md
 │   ├── prompt-templates.md
 │   └── worktree-parallelization.md
 └── evals/

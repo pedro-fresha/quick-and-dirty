@@ -18,6 +18,12 @@
       "prompt": "Add billing support to our production app with clean architecture and a maintainable foundation for future payment methods.",
       "expected_output": "Does not use this skill; routes to durable architecture, implementation, and testing workflows.",
       "files": []
+    },
+    {
+      "id": "long-prd-compression",
+      "prompt": "Use quick-and-dirty on this 20-stage PRD. The requirements are detailed, but the code is throwaway. Find every safe corner to cut, parallelize what you can, and still make sure the acceptance criteria and edge cases pass.",
+      "expected_output": "Extracts non-negotiables and acceptance criteria, classifies stages into must implement/must verify/can collapse/can cut/can parallelize/must sequence, produces a compressed critical-path plan, lists intentional shortcuts, and verifies outcomes rather than following all stages literally.",
+      "files": []
     }
   ]
 }
