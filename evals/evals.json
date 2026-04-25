@@ -1,0 +1,23 @@
+{
+  "skill_name": "quick-and-dirty",
+  "evals": [
+    {
+      "id": "open-source-app-feature",
+      "prompt": "Add keyboard shortcuts to this open source app. I do not care about code quality; I just need the shortcuts to work reliably and be tested.",
+      "expected_output": "Creates a behavior checklist, implements the shallowest working patch, adds targeted tests or smoke checks for shortcuts and conflicts, avoids broad refactors, and reports fresh verification evidence.",
+      "files": []
+    },
+    {
+      "id": "parallel-provider-adapters",
+      "prompt": "Add support for three independent providers. Go fast, use parallel agents and worktrees where possible, and make sure edge cases work.",
+      "expected_output": "Defines shared contract sequentially, dispatches independent provider work to isolated worktrees, runs targeted and integration verification, and uses an integration review before completion claims.",
+      "files": []
+    },
+    {
+      "id": "durable-production-negative",
+      "prompt": "Add billing support to our production app with clean architecture and a maintainable foundation for future payment methods.",
+      "expected_output": "Does not use this skill; routes to durable architecture, implementation, and testing workflows.",
+      "files": []
+    }
+  ]
+}
