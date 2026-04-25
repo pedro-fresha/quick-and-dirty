@@ -20,11 +20,15 @@ where maintainability matters.
 The skill instructs an AI coding agent to:
 
 - lock a result contract before coding
+- adapt ceremony to input size — trivial inputs get a one-line contract, long
+  PRDs get triaged into a compressed critical path
 - triage long PRDs and detailed plans into the fastest valid execution path
-- create isolated worktrees when useful
-- split independent work across subagents
+- create isolated worktrees only when the orchestration overhead is justified
+- split independent work across subagents when ownership is clean
 - prefer the shallowest working patch over clean architecture
 - spend the saved time on tests, smoke checks, and adversarial edge-case review
+- apply a defined shipping bar so verification does not loop indefinitely
+- surface risky cuts to the user as a single confirmation, never silently
 - avoid false success claims without fresh verification evidence
 
 The skill itself has no runtime dependencies. It is a plain Agent Skills
@@ -188,7 +192,14 @@ works, handles edge cases, and is verified.
 │   ├── evaluation.md
 │   ├── long-spec-triage.md
 │   ├── prompt-templates.md
+│   ├── shipping-bar.md
 │   └── worktree-parallelization.md
-└── evals/
-    └── evals.json
+├── evals/
+│   └── evals.json
+├── LICENSE
+└── README.md
 ```
+
+## License
+
+MIT — see `LICENSE`.

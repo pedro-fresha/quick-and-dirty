@@ -48,6 +48,31 @@ Label each section:
 Do not ask the user to approve every cut. Ask only when cutting an item might
 change observable behavior or violate an explicit acceptance criterion.
 
+## Risky-Cut Confirmation Gate
+
+Before implementation, look at the full set of cuts as one list. If any cut
+sits in the "risky" zone, surface them to the user in one short message and
+wait for a single confirmation before proceeding.
+
+A cut is risky when it touches:
+
+- anything labelled "must" / "required" / "do not" / "always" / "never" in the
+  source spec
+- backwards compatibility with shipped behavior
+- security, privacy, authentication, authorization, or permission checks
+- data integrity, migrations, or destructive operations
+- public API contracts, file formats, or wire formats
+- accessibility, internationalization, or compliance requirements explicitly
+  named by the user
+
+Format the confirmation as a short numbered list, one cut per line, with the
+reason and the proposed alternative coverage. Ask once, with a clear default
+("proceed unless you object within this turn").
+
+Routine cuts (skipping abstractions, collapsing process stages, dropping
+nice-to-haves) do not need confirmation. Document them in the final report
+instead.
+
 ## Step 3: Build The Shortcut Plan
 
 Write a short plan with:

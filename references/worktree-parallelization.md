@@ -15,6 +15,23 @@ Use worktrees when:
 Skip worktrees only for trivial, single-file work on the correct branch with a
 clean working tree.
 
+## When Parallelization Is Overhead
+
+Parallelizing is sometimes slower than doing the work sequentially. Skip the
+multi-agent setup when:
+
+- the work fits in fewer than ~15 minutes of sequential implementation
+- there is only one truly independent track
+- the request is a 1-3 file edit with no separable subsystems
+- worktree setup, dependency install, or baseline checks would dominate the
+  total time
+- the task requires reasoning about cross-cutting state that splits poorly
+- the LLM cost of multiple long-context agents is greater than the speedup
+
+Default to sequential for small tasks. Default to parallel only when at least
+two independent file/module ownership sets exist, each large enough to justify
+the orchestration cost.
+
 ## Setup Sequence
 
 1. Check the current repo state:
@@ -121,3 +138,25 @@ When an implementer is blocked:
 
 Never run the same failing agent prompt repeatedly without new evidence or a
 changed hypothesis.
+
+## Cleanup On Failure
+
+Worktrees and agent branches must not be orphaned when something goes wrong.
+
+If the controller decides to abandon a track:
+
+```bash
+git worktree remove --force ".worktrees/<task-name>"
+git branch -D "agent/<task-name>"
+```
+
+If the controller crashed or the session ended mid-flight, list and prune
+stale worktrees before starting new work:
+
+```bash
+git worktree list
+git worktree prune
+```
+
+Never leave a worktree on disk that was never merged or explicitly archived.
+Disposable does not mean undocumented.

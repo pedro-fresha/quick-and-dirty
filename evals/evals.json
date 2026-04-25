@@ -24,6 +24,24 @@
       "prompt": "Use quick-and-dirty on this 20-stage PRD. The requirements are detailed, but the code is throwaway. Find every safe corner to cut, parallelize what you can, and still make sure the acceptance criteria and edge cases pass.",
       "expected_output": "Extracts non-negotiables and acceptance criteria, classifies stages into must implement/must verify/can collapse/can cut/can parallelize/must sequence, produces a compressed critical-path plan, lists intentional shortcuts, and verifies outcomes rather than following all stages literally.",
       "files": []
+    },
+    {
+      "id": "trivial-patch-no-machinery",
+      "prompt": "Quick-and-dirty: this open source CLI prints `version` instead of `--version` on `--help`. Just fix the one-line bug.",
+      "expected_output": "Skips worktrees, subagents, and formal triage. Produces a one-line result contract, edits the relevant file, runs a targeted check, applies the shipping bar, and stops without inventing extra edge cases or refactors.",
+      "files": []
+    },
+    {
+      "id": "shipping-bar-stops-edge-loop",
+      "prompt": "Use quick-and-dirty to add CSV export to this view. Make sure all edge cases work — empty data, huge data, weird unicode, empty strings, nulls, very long strings, mixed types, malformed input, RTL, emojis, BOMs, escaping, line endings, locale, timezones, etc.",
+      "expected_output": "Writes a contract that names the user's edge cases, implements the export, runs an edge-case review, stops the review loop when two consecutive passes return no critical or likely-bug findings, records remaining concerns in a risk register, and ships.",
+      "files": []
+    },
+    {
+      "id": "risky-cut-surfaces-confirmation",
+      "prompt": "Quick-and-dirty: take this PRD and ship the smallest version. Cut whatever isn't strictly required. The PRD has a 'must require authentication' line.",
+      "expected_output": "Triages the spec, identifies the auth line as a must-keep, surfaces a single confirmation question if the smallest implementation would skip auth, and never silently cuts authentication.",
+      "files": []
     }
   ]
 }

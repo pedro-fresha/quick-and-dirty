@@ -69,6 +69,56 @@ Expected behavior:
 - It produces a compressed critical-path plan with explicit shortcuts.
 - It verifies against outcomes and reports any unverified requirement as a risk.
 
+### Case 5: Trivial Patch (No Heavy Machinery)
+
+Prompt:
+
+> Quick-and-dirty: this open source CLI prints `version` instead of `--version`
+> on `--help`. Just fix the one-line bug.
+
+Expected behavior:
+
+- Skill recognizes a trivial input and skips worktrees, subagents, and formal
+  triage.
+- It produces a one-line result contract.
+- It edits the relevant file and runs a targeted check.
+- It applies the shipping bar and stops as soon as the contract is satisfied.
+- It does not invent extra edge cases or refactors.
+
+### Case 6: Verification Loop Failure (Regression)
+
+Prompt:
+
+> Use quick-and-dirty to add CSV export to this view. Make sure all edge cases
+> work — empty data, huge data, weird unicode, empty strings, nulls, very long
+> strings, mixed types, malformed input, RTL, emojis, BOMs, escaping, line
+> endings, locale, timezones, etc.
+
+Expected behavior:
+
+- Skill writes a result contract that names the user's edge cases.
+- It implements the export.
+- After two reviewer passes that surface no critical or likely-bug findings,
+  it stops the edge-case loop.
+- It records remaining concerns in a risk register and ships.
+- It does not loop indefinitely on increasingly hypothetical scenarios.
+
+### Case 7: Risky Cut Surfaces Confirmation
+
+Prompt:
+
+> Quick-and-dirty: take this PRD and ship the smallest version. Cut whatever
+> isn't strictly required.
+
+Where the PRD includes a "must require authentication" line.
+
+Expected behavior:
+
+- Skill triages the spec and identifies the auth line as a must-keep.
+- If the smallest implementation would skip auth, the skill surfaces this as a
+  single risky-cut confirmation question to the user.
+- It does not silently cut authentication.
+
 ## Trigger Evals
 
 Should trigger:
@@ -82,6 +132,11 @@ Should trigger:
 - "Fast one-off implementation, no architecture ceremony."
 - "This is throwaway code; maximize working result quality."
 - "Here is a huge PRD; follow quick-and-dirty principles and cut every safe corner."
+- "Build a quick prototype/POC/spike of this idea — throwaway code, just want to see if it works."
+- "Monkey-patch this library to fix the bug locally; never going upstream."
+- "Userscript to inject this behavior into the page; one-off."
+- "Build me a personal browser extension hack to do X."
+- "Internal-only tool, nobody else will touch it; ship it now."
 
 Should not trigger:
 
@@ -99,14 +154,20 @@ Should not trigger:
 For behavior evals, assert:
 
 - A result contract is written before implementation.
-- Worktree/subagent split is used only when ownership is independent.
+- Worktree/subagent split is used only when ownership is independent and the
+  orchestration overhead is justified.
+- Trivial inputs do not trigger worktrees, subagents, or formal triage.
 - Long PRDs are compressed into a critical path instead of followed stage by
   stage when stages are not runtime dependencies.
 - Intentional cuts are listed and checked against acceptance criteria.
+- Risky cuts are surfaced as a single confirmation question, not silently made.
 - Verification commands are listed with outcomes.
 - At least one edge-case review or checklist exists.
+- The edge-case review loop stops when consecutive passes produce no critical
+  or likely-bug findings.
 - No completion claim appears without fresh verification evidence.
 - The implementation avoids broad refactors unless required for correctness.
+- A final risk register documents accepted risks instead of hiding them.
 
 ## Review Notes
 
@@ -117,3 +178,6 @@ Review transcripts, not only final output. The most important failure modes are:
 - dispatching agents with overlapping file ownership
 - trusting subagent success without independent verification
 - hiding baseline failures
+- imposing worktree/subagent ceremony on trivial requests
+- looping on hypothetical edge cases without a shipping bar
+- silently cutting requirements that needed user confirmation

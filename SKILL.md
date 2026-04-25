@@ -2,13 +2,17 @@
 name: quick-and-dirty
 description: >-
   Use when the user explicitly wants a one-off, disposable, quick-and-dirty
-  implementation for an open source library, app, fork, local patch, or throwaway
-  feature where result correctness and speed matter far more than maintainability,
-  readability, elegance, or long-term architecture. Also use for "hack it in",
-  "just make it work", "never touched again", "fast implementation", "parallelize
-  agents", or "zero known bugs" requests. Do not use for durable product code,
-  production infrastructure, security-sensitive changes, migrations, public API
-  contracts, or work where future maintenance quality matters.
+  implementation for an open source library, app, fork, local patch, prototype,
+  POC, spike, hack, monkey-patch, userscript, browser-extension hack, internal
+  tool, or throwaway feature where result correctness and speed matter far more
+  than maintainability, readability, elegance, or long-term architecture. Also
+  use for "hack it in", "just make it work", "never touched again", "fast
+  implementation", "throwaway script", "ship it now", "smallest patch", "find
+  every safe corner to cut", or "zero known bugs" requests, including when the
+  input is a long detailed PRD that should be compressed into the fastest valid
+  execution path. Do not use for durable product code, production infrastructure,
+  security-sensitive changes, migrations, public API contracts, or work where
+  future maintenance quality matters.
 compatibility: Portable Agent Skills core; richer behavior when the host supports subagents and git worktrees.
 ---
 
@@ -24,8 +28,10 @@ satisfies the requirements and has no known bugs after serious verification.
 
 - Accept duplication, local glue, direct imperative code, and shallow patches.
 - Prefer the smallest change surface that makes the feature work.
-- Use parallel agents and worktrees aggressively when tasks can be isolated.
-- Spend saved design time on tests, edge cases, and evidence.
+- Use parallel agents and worktrees when isolation pays off, and skip them when
+  orchestration overhead would beat the savings.
+- Spend saved design time on tests, edge cases, and evidence — bounded by the
+  shipping bar, not by an infinite "what if" loop.
 
 It does **not** mean:
 
@@ -37,6 +43,37 @@ It does **not** mean:
 - making destructive or security-risky changes
 
 If the user's real priority is maintainable production code, route elsewhere.
+
+## Adaptive Sizing
+
+Match ceremony to the size of the request. Same mandates, scaled effort.
+
+| Input shape | Planning effort | Subagents | Verification |
+| --- | --- | --- | --- |
+| Trivial (1 file, < 10 lines, clear intent) | One-line contract | None | Targeted test or smoke check |
+| Small feature or fix | 3-5 line contract, ad-hoc checklist | Optional, only if useful | Targeted tests + bug matrix |
+| Medium feature (multi-file, multi-step) | Result contract + 5-10 task plan | Use when ownership is independent | Targeted tests + integration smoke |
+| Long PRD / multi-stage plan / large issue | Triage via `references/long-spec-triage.md` | Parallel tracks where safe | Outcome-mapped bug matrix + integration |
+| Vague chat-style prompt | Restate the request as a contract first | Decide after sizing | Verify the restated contract |
+
+Do not impose worktrees, multi-agent orchestration, or formal triage on tiny
+requests. The mandates (no false success, no skipped edge cases, no destructive
+changes) still hold; the machinery shrinks.
+
+## Repo-Type Awareness
+
+The disposable strategy depends on where the patch lands:
+
+- **Open source fork**: changes will likely be rebased onto upstream. Keep
+  changes localized, avoid touching files that change often upstream, prefer
+  monkey-patches, plugin hooks, or wrapper modules over edits to core files.
+- **Personal prototype / spike**: anything goes; cut the most corners.
+- **Vendored dependency / `node_modules`-style copy**: changes will be wiped on
+  reinstall. Either avoid editing the vendored copy, or document a postinstall
+  reapply step.
+- **Internal tool / one-off script**: maximum freedom; still verify outcomes.
+- **User's own repo with later cleanup planned**: leave a short `TODO:
+  quick-and-dirty` marker so future maintainers can find the disposable seams.
 
 ## Default Workflow
 
@@ -82,7 +119,12 @@ If the user's real priority is maintainable production code, route elsewhere.
      cases, existing behavior, integration points, and user-visible smoke path.
    - Add automated tests when the project has a usable test harness.
    - Use targeted tests during implementation, then run the broadest reasonable
-     suite before claiming completion.
+     suite before claiming completion. "Broadest reasonable" means the tests
+     touching the changed surface plus a fast smoke pass — not the entire repo
+     suite when that takes minutes for a tiny patch.
+   - Apply the minimum test bar from `references/shipping-bar.md`: one check per
+     acceptance criterion, one per explicitly named edge case, skip tests for
+     behavior the platform already guarantees.
    - For UI work, include a browser or manual smoke path when possible.
 
 6. **Run adversarial verification.**
@@ -92,11 +134,13 @@ If the user's real priority is maintainable production code, route elsewhere.
      worktrees.
    - Treat every reviewer finding as a bug until disproven by evidence.
 
-7. **Report with evidence.**
+7. **Report with evidence and ship.**
    - State what changed, which requirements are covered, which verification ran,
      and any remaining known risks.
    - Never claim "done", "fixed", "passing", or "no bugs" without fresh
      verification evidence.
+   - Apply the shipping bar from `references/shipping-bar.md` to decide when the
+     work is finished. "No known bugs" is a defined bar, not an infinite loop.
 
 ## Parallelization Rules
 
@@ -119,6 +163,10 @@ Do not parallelize:
 - migrations or destructive operations
 - security-sensitive changes
 - stateful integration work that must be reasoned about as one system
+- tasks where the orchestration overhead (worktree setup, dispatch, merge,
+  integration verification) is larger than doing the work sequentially —
+  typically anything < ~15 minutes of sequential work, or fewer than 2 truly
+  independent tracks
 
 ## Dirty-Code Budget
 
@@ -160,6 +208,9 @@ Stop and ask the user before continuing when:
 
 ## Reference Router
 
+- Read `references/shipping-bar.md` when deciding whether the work is done,
+  when defining the minimum test bar, or when an edge-case review is producing
+  diminishing returns.
 - Read `references/worktree-parallelization.md` when dispatching subagents,
   creating worktrees, merging worktree branches, or deciding what can run in
   parallel.
